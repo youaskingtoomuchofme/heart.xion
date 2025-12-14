@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click to Enter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .enter-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            cursor: pointer;
+            transition: opacity 0.8s ease;
+            overflow: hidden;
+        }
+
+        .enter-screen::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: calc(100% + 20px);
+            height: calc(100% + 20px);
+            background: url(images/background.jpg) center center / cover no-repeat;
+            filter: blur(15px) brightness(0.4);
+            z-index: -1;
+        }
+
+        .enter-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .enter-text {
+            color: #fff;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .enter-subtitle {
+            color: #888;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .sub-subtitle {
+            color: #888;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top : 1rem;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .main-content {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            opacity: 0.4;
+            transition: opacity 1s ease;
+            overflow: hidden;
+        }
+
+        .main-content::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: calc(100% + 20px);
+            height: calc(100% + 20px);
+            background: url(images/background.jpg) center center / cover no-repeat;
+            filter: blur(4px);
+            z-index: -1;
+        }
+
+        .main-content.visible {
+            opacity: 1;
+        }
+
+        .content-box {
+            text-align: center;
+            color: #fff;
+        }
+
+        .content-box h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-box a {
+            margin: 0 5px;
+        }
+
+        .content-box p {
+            font-size: 1.2rem;
+        }
+
+        #moon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            transform: scale(1.1);
+            opacity: 0.5
+        }
+
+        #dumbassfuckingskeleton {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 450px;
+            height: auto;
+            opacity: 0.9;
+            z-index: 100;
+        }
+
+        #siahlogoumm {
+            position: fixed;
+            top: 8px;
+            right: -80px;
+            max-width: 550px;
+            height: auto;
+            opacity: 0.9;
+            z-index: 100;
+        }
+
+        /* Responsive sizing for smaller screens */
+        @media (max-width: 768px) {
+            #siahlogoumm {
+                max-width: 250px;
+            }
+        }
+
+        #bgMusic.hidden-controls {
+            display: none;
+        }
+
+        .now-playing {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            padding: 15px 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .now-playing.visible {
+            opacity: 1;
+        }
+
+        .album-art {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .song-info {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .now-playing-label {
+            font-size: 0.65rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .song-title {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .song-artist {
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+
+        @media (max-width: 768px) {
+            .now-playing {
+                bottom: 10px;
+                padding: 12px 15px;
+                gap: 12px;
+            }
+
+            .album-art {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .song-title {
+                font-size: 0.9rem;
+            }
+            
+            .song-artist {
+                font-size: 0.75rem;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <!-- HTML5 Audio Element -->
+    <audio id="bgMusic">
+        <source src="" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div class="enter-screen" id="enterScreen">
+        <div class="enter-text">Click to Enter</div>
+        <div class="enter-subtitle">Click anywhere!</div>
+        <div class="sub-subtitle">Audio Warning! (Turn Browser Down If Needed)</div>
+        
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <!-- Top Right Image -->
+        <img id="siahlogoumm" src="images/logo.png" alt="Top Right Image">
+
+        <div class="content-box">
+            <h1></h1>
+            <a href="https://instagr.am/kxxr" style="color: white; text-decoration: none;">
+            <i class="fa-brands fa-instagram" style="font-size: 30px"></i>
+            </a>
+
+            <a href="https://t.me/legendarycomboss" style="color: white; text-decoration: none;">
+            <i class="fa-brands fa-telegram" style="font-size: 30px"></i>
+            </a>
+
+            <a href="https://last.fm/user/wooshii_" style="color: white; text-decoration: none;">
+            <i class="fa-brands fa-lastfm" style="font-size: 30px"></i>
+            </a>
+
+            <a href="https://steamcommunity.com/profiles/76561198371204826" style="color: white; text-decoration: none;">
+            <i class="fa-brands fa-steam" style="font-size: 30px"></i>
+            </a>
+
+            <a href="https://x.com/igotfakeaura" style="color: white; text-decoration: none;">
+            <i class="fa-brands fa-x-twitter" style="font-size: 30px"></i>
+            </a>
+
+        </div>
+   
+    
+
+        <!-- that dumbass skeleton -->
+        <img id="dumbassfuckingskeleton" src="images/skeleton.gif" alt="Bottom Left GIF">
+
+    
+
+    </div> 
+
+    <!-- nowplayingnowplayingnowplaying -->
+    <div class="now-playing" id="nowPlaying">
+        <img id="albumArt" class="album-art" src="" alt="Album Art">
+        <div class="song-info">
+            <div class="now-playing-label">Now Playing</div>
+            <div class="song-title" id="songTitle">-</div>
+            <div class="song-artist" id="songArtist">-</div>
+        </div>
+    </div>
+
+    <script>
+        const enterScreen = document.getElementById('enterScreen');
+        const mainContent = document.getElementById('mainContent');
+        const bgMusic = document.getElementById('bgMusic');
+        const nowPlaying = document.getElementById('nowPlaying');
+        const songTitle = document.getElementById('songTitle');
+        const songArtist = document.getElementById('songArtist');
+        const albumArt = document.getElementById('albumArt');
+
+       
+        const musicPlaylist = [
+            { url: 'songs/zinobladeripzino.mp3', title: 'rip zino', artist: 'zinoblade', cover: 'covers/ripzino.png' },
+            { url: 'songs/thouxanbanfauniWishTheWorst.mp3', title: 'Wish The Worst', artist: 'Thouxanbanfauni', cover: 'covers/wishtheworst.jpg' },
+            { url: 'songs/zesh#FINALLYHAPPY.mp3', title: '# FINALLY HAPPY', artist: 'zesh', cover: 'covers/#finallyhappy.jpg' },
+            { url: 'songs/egress1soar.mp3', title: 'soar', artist: 'egress1', cover: 'covers/soar.jpg' },
+            { url: 'songs/ICYTWATwicked.mp3', title: 'Wicked', artist: 'ICYTWAT', cover: 'covers/wicked.jpg' },
+            { url: 'songs/egress1lol.mp3', title: 'lol', artist: 'egress1', cover: 'covers/lol.png' },
+            { url: 'songs/velokeyexisting.m4a', title: 'existing', artist: 'velokey', cover: 'covers/existing.jpg' },
+            { url: 'songs/lebxanonsideways.m4a', title: 'sideways', artist: 'lebxanon', cover: 'covers/sideways.jpg' },
+            { url: 'songs/LeradoKhalilUntitled2.mp3', title: 'Untitled 2', artist: 'Lerado Khalil', cover: 'covers/untitled2.jpg' },
+            { url: 'songs/LeradoKhalilSoloMission.mp3', title: 'Solo Mission', artist: 'Lerado Khalil', cover: 'covers/solomission.jpg' },
+            { url: 'songs/LeradoKhalilNext2M3.m4a', title: 'Next2M3', artist: 'Lerado Khalil', cover: 'covers/next2m3.jpg' },
+            { url: 'songs/LeradoKhalil10.m4a', title: '10', artist: 'Lerado Khalil', cover: 'covers/10.jpg' },
+            { url: 'songs/LeradoKhalil1999Prologue.m4a', title: '1999 Prologue', artist: 'Lerado Khalil', cover: 'covers/1999prologue.jpg' },
+            { url: 'songs/myrludamn.mp3', title: 'damn', artist: 'myrlu', cover: 'covers/damn.jpg' },
+            { url: 'songs/RRdameVoodoo.mp3', title: 'Voodoo #FreeBG', artist: 'RRdame', cover: 'covers/voodoo.png' },
+            { url: 'songs/visspictureperfect.mp3', title: 'picture perfect', artist: 'viss', cover: 'covers/pictureperfect.jpg' },
+        ];
+
+        // Shuffle the playlist to get a random order
+        let shuffledPlaylist = [...musicPlaylist].sort(() => Math.random() - 0.5);
+        let currentSongIndex = 0;
+
+        // Function to play the next song
+        function playNextSong() {
+            // If we've played all songs, reshuffle and start over
+            if (currentSongIndex >= shuffledPlaylist.length) {
+                shuffledPlaylist = [...musicPlaylist].sort(() => Math.random() - 0.5);
+                currentSongIndex = 0;
+                console.log('Playlist finished! Reshuffling...');
+            }
+
+            const nextSong = shuffledPlaylist[currentSongIndex];
+            const source = bgMusic.querySelector('source');
+            source.src = nextSong.url;
+            bgMusic.load();
+            
+            // Update now playing display
+            songTitle.textContent = nextSong.title;
+            songArtist.textContent = nextSong.artist;
+            albumArt.src = nextSong.cover;
+            
+            console.log(`Now playing (${currentSongIndex + 1}/${shuffledPlaylist.length}): ${nextSong.title} - ${nextSong.artist}`);
+            
+            bgMusic.play().catch(error => {
+                console.error('Error playing audio:', error);
+            });
+
+            currentSongIndex++;
+        }
+
+        // Set the first random song
+        playNextSong();
+
+        // Optional: Set volume (0.0 to 1.0)
+        bgMusic.volume = 0.5;
+
+        // When a song ends, play the next one
+        bgMusic.addEventListener('ended', () => {
+            playNextSong();
+        });
+
+        enterScreen.addEventListener('click', () => {
+            // Play the audio
+            bgMusic.play().then(() => {
+                console.log('Music started!');
+                // Show now playing display
+                nowPlaying.classList.add('visible');
+            }).catch(error => {
+                console.error('Error playing audio:', error);
+            });
+
+            enterScreen.classList.add('hidden');
+            
+            setTimeout(() => {
+                mainContent.classList.add('visible');
+                document.body.style.overflow = 'auto';
+            }, 300);
+        });
+    </script>
+</body>
+</html>
